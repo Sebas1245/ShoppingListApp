@@ -1,8 +1,9 @@
 import React, {useState} from 'react';
-import {View, StyleSheet, FlatList} from 'react-native';
+import {View, StyleSheet, FlatList, Alert} from 'react-native';
 import Header from './components/Header';
 import ListItem from './components/ListItem';
 import uuid from 'react-native-uuid';
+import AddItem from './components/AddItem';
 
 const App = () => {
   const [items, setItems] = useState([
@@ -17,9 +18,25 @@ const App = () => {
       return prevItems.filter(item => item.id !== id);
     });
   };
+
+  const addItem = text => {
+    if (!text) {
+      Alert.alert('Error', 'Please enter an item', {text: 'Ok'});
+    } else {
+      setItems(prevItems => {
+        const newItem = {
+          id: uuid.v4(),
+          text,
+        };
+        return [newItem, ...prevItems];
+      });
+    }
+  };
+
   return (
     <View style={styles.container}>
       <Header />
+      <AddItem addItem={addItem} />
       {/* FlatList is equivalent to table view in iOS */}
       <FlatList
         data={items}
